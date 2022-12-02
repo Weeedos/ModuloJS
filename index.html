@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+
+    <title>Number guessing game</title>
+
+    <style>
+      html {
+        font-family: sans-serif;
+      }
+
+      body {
+        width: 50%;
+        max-width: 800px;
+        min-width: 480px;
+        margin: 0 auto;
+      }
+      
+      .form input[type="number"] {
+        width: 200px;
+      }
+
+      .lastResult {
+        color: white;
+        padding: 3px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Number guessing game</h1>
+
+    <p>We have selected a random number between 0 and 1001. See if you can guess it. You have unlimited modulo guesses but you can guess the final number only once!</p>
+
+    <div class="form">
+        <label for="guessFinalField">Enter a final guess: </label>
+        <input type="number" min="1" max="100" required id="guessFinalField" class="guessFinalField">
+        <input type="submit" value="Submit guess" class="guessFinalSubmit">
+    </div>
+
+    <div class="form">
+        <label for="guessModuloField">Enter a modulo guess: </label>
+        <input type="number" min="1" max="100" required id="guessModuloField" class="guessModuloField">
+        <input type="submit" value="Submit guess" class="guessModuloSubmit">
+    </div>
+
+    <div class="final">
+        <p class="final"></p>
+    </div>
+
+    <div class="modulo">
+        <p class="guessesModulo"></p>
+        <p class="lastResultModulo"></p>
+        <p class="number-test"></p>
+    </div>
+
+    <script>
+      let randomNumber = Math.floor(Math.random() * 1002);
+      const guessesModulo = document.querySelector('.guessesModulo');
+      const final = document.querySelector('.final');
+      const guessFinalSubmit = document.querySelector('.guessFinalSubmit');
+      const guessFinalField = document.querySelector('.guessFinalField');
+      const guessModuloSubmit = document.querySelector('.guessModuloSubmit');
+      const guessModuloField = document.querySelector('.guessModuloField');
+      let guessCount = 1;
+      let resetButton;
+
+      function checkFinalGuess(){
+        const userGuess = Number(guessFinalField.value);
+        if(userGuess === randomNumber){
+          final.textContent = 'Congratulations! You got it right!';
+          final.style.backgroundColor = 'green';
+          setGameOver();
+        } else {
+            final.textContent = 'Wrong!'
+            final.style.backgroundColor = 'red';
+            setGameOver();
+        }
+      }
+
+      function modulo () {
+        const userGuess = Number(guessModuloField.value);
+        if (guessCount === 1) {
+          guessesModulo.textContent = 'Modulo guesses: ';
+        }
+        guessesModulo.textContent += (randomNumber % userGuess) + ' ';
+        guessCount++;
+      }
+
+      guessFinalSubmit.addEventListener('click', checkFinalGuess);
+      guessModuloSubmit.addEventListener('click', modulo);
+
+      function setGameOver() {
+        guessFinalField.disabled = true;
+        guessFinalSubmit.disabled = true;
+        guessModuloField.disabled = true;
+        guessModuloSubmit.disabled = true;
+        resetButton = document.createElement('button');
+        resetButton.textContent = 'Start new game';
+        document.body.appendChild(resetButton);
+        resetButton.addEventListener('click', resetGame);
+      }
+
+      function resetGame() {
+        guessCount = 1;
+
+        resetButton.parentNode.removeChild(resetButton);
+        guessFinalField.disabled = false;
+        guessFinalSubmit.disabled = false;
+        guessModuloField.disabled = false;
+        guessModuloSubmit.disabled = false;
+        guessFinalField.value = '';
+        guessModuloField.value = '';
+        guessModuloField.focus();
+        final.textContent = '';
+        final.style.backgroundColor = 'white';
+        randomNumber = Math.floor(Math.random() * 1002);
+      }
+    </script>
+  </body>
+</html>
